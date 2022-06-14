@@ -5,16 +5,42 @@
 package br.com.infox.telas;
 
 /**
- *
- * @author Dell Inspiron
+ * Aula 13
+ * @author Walmir Pacheco
  */
+    import java.sql.*;
+    import br.com.infox.dal.ModuloConexao;
+import javax.swing.JOptionPane;
 public class TelaUsuario extends javax.swing.JInternalFrame {
-
-    /**
-     * Creates new form TelaUsuario
-     */
+        // Criando a variável conexão do DAL
+    Connection conexao = null;
+    // criando variáveis especiais para conexão com o banco
+    // prepared Statement e ResultSet são frameworks do pacote java.sql
+    // e servem para preparar e executar as instruções SQL
+    PreparedStatement pst = null;
+    ResultSet rs = null;
+    
     public TelaUsuario() {
         initComponents();
+        conexao = ModuloConexao.conector();
+    }
+    
+    private void consultar(){
+        String sql ="select * from tbusuarios where iduser=?";
+        try {
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, txtUsuId.getText());
+            rs=pst.executeQuery();
+            if (rs.next()) {
+                txtUsuNome.setText(rs.getString(2));
+                txtUsuFone.setText(rs.getString(3));
+                txtUsuLogin.setText(rs.getString(4));
+                txtUsuSenha.setText(rs.getString(5));
+            } else {
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
     }
 
     /**
@@ -73,6 +99,11 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         btnUsuRead.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnUsuRead.setOpaque(true);
         btnUsuRead.setPreferredSize(new java.awt.Dimension(80, 80));
+        btnUsuRead.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUsuReadActionPerformed(evt);
+            }
+        });
 
         btnUsuUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/infox/icones/update.png"))); // NOI18N
         btnUsuUpdate.setToolTipText("Alterar");
@@ -167,6 +198,11 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
 
         setBounds(0, 0, 640, 480);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnUsuReadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuReadActionPerformed
+        // chamando o método consultar
+        consultar();
+    }//GEN-LAST:event_btnUsuReadActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

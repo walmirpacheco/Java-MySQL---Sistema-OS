@@ -14,11 +14,16 @@ import javax.swing.JOptionPane;
  * @author Dell Inspiron
  */
 public class TelaLogin extends javax.swing.JFrame {
-
+    
+    // Criando a variável conexão do DAL
     Connection conexao = null;
+    // criando variáveis especiais para conexão com o banco
+    // prepared Statement e ResultSet são frameworks do pacote java.sql
+    // e servem para preparar e executar as instruções SQL
     PreparedStatement pst = null;
     ResultSet rs = null;
-
+    
+    // criando o metodo logar
     public void logar() {
         String sql = "select * from tbusuarios where login =? and senha =?";
         try {
@@ -64,9 +69,12 @@ public class TelaLogin extends javax.swing.JFrame {
      */
     public TelaLogin() {
         initComponents();
+        // estabelece a conexao com o banco sempre neste
+        // ponto
         conexao = ModuloConexao.conector();
         //a linha abaixo serve de apoio ao status da conexão
         //System.out.println(conexao);
+        //a linh abaixo muda o icone de acordo com o status
         if (conexao != null) {
             lblStatus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/infox/icones/dbok.png")));
         } else {
