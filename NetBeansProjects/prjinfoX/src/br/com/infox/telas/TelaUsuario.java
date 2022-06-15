@@ -36,7 +36,16 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
                 txtUsuFone.setText(rs.getString(3));
                 txtUsuLogin.setText(rs.getString(4));
                 txtUsuSenha.setText(rs.getString(5));
+                // a linha abaixo se refere ao combobox
+                cboUsuPerfil.setSelectedItem(rs.getString(6));
             } else {
+                JOptionPane.showMessageDialog(null,"[ERRO!] Usuário não cadastrado");
+                // as linhas abaixo "limpam os campos"
+                txtUsuNome.setText(null);
+                txtUsuFone.setText(null);
+                txtUsuLogin.setText(null);
+                txtUsuSenha.setText(null);
+                cboUsuPerfil.setSelectedItem(null);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
