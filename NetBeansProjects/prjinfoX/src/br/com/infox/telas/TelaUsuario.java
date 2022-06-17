@@ -6,31 +6,35 @@ package br.com.infox.telas;
 
 /**
  * Aula 13
+ *
  * @author Walmir Pacheco
  */
-    import java.sql.*;
-    import br.com.infox.dal.ModuloConexao;
+import java.sql.*;
+import br.com.infox.dal.ModuloConexao;
 import javax.swing.JOptionPane;
+
 public class TelaUsuario extends javax.swing.JInternalFrame {
-        // Criando a variável conexão do DAL
+    // Criando a variável conexão do DAL
+
     Connection conexao = null;
     // criando variáveis especiais para conexão com o banco
     // prepared Statement e ResultSet são frameworks do pacote java.sql
     // e servem para preparar e executar as instruções SQL
     PreparedStatement pst = null;
     ResultSet rs = null;
-    
+
     public TelaUsuario() {
         initComponents();
         conexao = ModuloConexao.conector();
     }
+
     // Método para consultat usuários
-    private void consultar(){
-        String sql ="select * from tbusuarios where iduser=?";
+    private void consultar() {
+        String sql = "select * from tbusuarios where iduser=?";
         try {
             pst = conexao.prepareStatement(sql);
             pst.setString(1, txtUsuId.getText());
-            rs=pst.executeQuery();
+            rs = pst.executeQuery();
             if (rs.next()) {
                 txtUsuNome.setText(rs.getString(2));
                 txtUsuFone.setText(rs.getString(3));
@@ -39,7 +43,7 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
                 // a linha abaixo se refere ao combobox
                 cboUsuPerfil.setSelectedItem(rs.getString(6));
             } else {
-                JOptionPane.showMessageDialog(null,"[ERRO!] Usuário não cadastrado");
+                JOptionPane.showMessageDialog(null, "[ERRO!] Usuário não cadastrado");
                 // as linhas abaixo "limpam os campos"
                 txtUsuNome.setText(null);
                 txtUsuFone.setText(null);
@@ -51,9 +55,10 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, e);
         }
     }
+
     // Método para adicionar usuários
     private void adicionar() {
-        String sql ="insert into tbusuarios(iduser,usuario,fone,login,senha,perfil) values(?,?,?,?,?,?)";
+        String sql = "insert into tbusuarios(iduser,usuario,fone,login,senha,perfil) values(?,?,?,?,?,?)";
         try {
             pst = conexao.prepareStatement(sql);
             pst.setString(1, txtUsuId.getText());
@@ -63,7 +68,19 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
             pst.setString(5, txtUsuSenha.getText());
             pst.setString(6, cboUsuPerfil.getSelectedItem().toString());
             //a linha abaixo atualiza a tabela do usuário com os campos do formulário
-            pst.executeUpdate();
+            // a extrutura abaixo é usada para confirmar a inserção dos dados da tabela
+            int adicionado = pst.executeUpdate();
+            // a linha abaixo serve de apoio ao entendimento da lógica
+            //System.out.println(adicionado);
+            if (adicionado > 0) {
+                JOptionPane.showMessageDialog(null, "Usuário adicionado com sucesso!");
+                // a linha abaixo, limpa todos os campos
+                txtUsuNome.setText(null);
+                txtUsuFone.setText(null);
+                txtUsuLogin.setText(null);
+                txtUsuSenha.setText(null);
+                cboUsuPerfil.setSelectedItem(null);
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
