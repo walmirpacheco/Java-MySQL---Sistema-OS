@@ -109,10 +109,10 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
 
                 // a linha abaixo atualiza a tabela usuário com os dados do formulário
                 // a estrutura abaixo é usada para confirmar a alteração dos dados na tabela
-                int adicionado = pst.executeUpdate();
+                int alterado = pst.executeUpdate();
                 // a linha abaixo serve de apoio ao entendimento da lógica
                 //System.out.println(adicionado);
-                if (adicionado > 0) {
+                if (alterado > 0) {
                     JOptionPane.showMessageDialog(null, "Dados do usuário alterados com sucesso!");
                     txtUsuId.setText(null);
                     txtUsuNome.setText(null);

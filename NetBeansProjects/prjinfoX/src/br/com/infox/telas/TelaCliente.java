@@ -4,17 +4,59 @@
  */
 package br.com.infox.telas;
 
+import java.sql.*;
+import br.com.infox.dal.ModuloConexao;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Dell Inspiron
  */
 public class TelaCliente extends javax.swing.JInternalFrame {
 
+    Connection conexao = null;
+    PreparedStatement pst = null;
+    ResultSet rs = null;
+
     /**
      * Creates new form TelaCliente
      */
     public TelaCliente() {
         initComponents();
+        conexao = ModuloConexao.conector();
+    }
+
+    // Método para adicionar clientes
+    private void adicionar() {
+        String sql = "insert into tbclientes(nomecli,endcli,fonecli,emailcli) values(?,?,?,?)";
+        try {
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, txtCliNome.getText());
+            pst.setString(2, txtCliEndereco.getText());
+            pst.setString(3, txtCliFone.getText());
+            pst.setString(4, txtCliEmail.getText());
+            // Validação dos campos obrigatórios
+            if ((txtCliNome.getText().isEmpty()) || (txtCliFone.getText().isEmpty())) {
+                JOptionPane.showMessageDialog(null, "[ERRO] Preencha todos os campos obrigatórios!");
+
+            } else {
+                //a linha abaixo atualiza a tabela do usuário com os campos do formulário
+                // a extrutura abaixo é usada para confirmar a inserção dos dados da tabela
+                int adicionado = pst.executeUpdate();
+                // a linha abaixo serve de apoio ao entendimento da lógica
+                //System.out.println(adicionado);
+                if (adicionado > 0) {
+                    JOptionPane.showMessageDialog(null, "Cliente adicionado com sucesso!");
+                    // A linha abaixo limpa todos os campos
+                    txtCliNome.setText(null);
+                    txtCliEndereco.setText(null);
+                    txtCliFone.setText(null);
+                    txtCliEmail.setText(null);
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
     }
 
     /**
@@ -62,7 +104,7 @@ public class TelaCliente extends javax.swing.JInternalFrame {
 
         jLabel1.setText("*Nome");
 
-        jLabel2.setText("*Endereço");
+        jLabel2.setText("Endereço");
 
         jLabel3.setText("*Telefone");
 
@@ -71,14 +113,22 @@ public class TelaCliente extends javax.swing.JInternalFrame {
         jLabel5.setText("*Campos obrigatórios");
 
         btnAdicionar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/infox/icones/create.png"))); // NOI18N
+        btnAdicionar.setToolTipText("Adicionar");
         btnAdicionar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAdicionar.setPreferredSize(new java.awt.Dimension(80, 80));
+        btnAdicionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdicionarActionPerformed(evt);
+            }
+        });
 
         btnAlterar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/infox/icones/update.png"))); // NOI18N
+        btnAlterar.setToolTipText("Alterar");
         btnAlterar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAlterar.setPreferredSize(new java.awt.Dimension(80, 80));
 
         btnRemover.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/infox/icones/delete.png"))); // NOI18N
+        btnRemover.setToolTipText("Apagar");
         btnRemover.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnRemover.setPreferredSize(new java.awt.Dimension(80, 80));
 
@@ -133,7 +183,7 @@ public class TelaCliente extends javax.swing.JInternalFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(35, 35, 35)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 534, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap(36, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(txtCliPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -156,9 +206,8 @@ public class TelaCliente extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtCliPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel6))
+                    .addComponent(jLabel6)
+                    .addComponent(txtCliPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -193,6 +242,11 @@ public class TelaCliente extends javax.swing.JInternalFrame {
 
         setBounds(0, 0, 640, 482);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarActionPerformed
+        // Método para adicionar clientes
+        adicionar();
+    }//GEN-LAST:event_btnAdicionarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
