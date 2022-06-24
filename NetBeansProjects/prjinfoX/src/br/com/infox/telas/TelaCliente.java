@@ -92,6 +92,9 @@ public class TelaCliente extends javax.swing.JInternalFrame {
 
     //Criando o método para alterar dados do cliente
     private void alterar() {
+        // a linha abaixo confirma a alteração de dados do cliente ou não
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza de deseja alterar esses dados do cliente?"," Atenção",JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
         String sql = "update tbclientes set nomecli=?,endcli=?,fonecli=?,emailcli=? where idcli=?";
         try {
             pst = conexao.prepareStatement(sql);
@@ -115,11 +118,13 @@ public class TelaCliente extends javax.swing.JInternalFrame {
                     txtCliEndereco.setText(null);
                     txtCliFone.setText(null);
                     txtCliEmail.setText(null);
+                    txtCliId.setText(null);
                     btnAdicionar.setEnabled(true);
-                }
+                }            
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
+        }
         }
     }
 
@@ -139,6 +144,7 @@ public class TelaCliente extends javax.swing.JInternalFrame {
                     txtCliEndereco.setText(null);
                     txtCliFone.setText(null);
                     txtCliEmail.setText(null);
+                    txtCliId.setText(null);
                     btnAdicionar.setEnabled(true);
                 }
             } catch (Exception e) {

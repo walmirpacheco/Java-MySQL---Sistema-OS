@@ -93,6 +93,9 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
 
     //criando o método para alterar dados do usuário
     private void alterar() {
+        // a estrutura abaixo confirma a alteração do usuário ou não
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja alterar esses dados do usuário?"," Atenção",JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
         String sql = "update tbusuarios set usuario=?,fone=?,login=?,senha=?,perfil=? where iduser=?";
         try {
             pst = conexao.prepareStatement(sql);
@@ -123,6 +126,7 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
+        }
         }
     }
     // método responsável pela remoção de usuários
