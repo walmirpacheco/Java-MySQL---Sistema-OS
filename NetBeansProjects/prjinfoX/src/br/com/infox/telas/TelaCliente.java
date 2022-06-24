@@ -32,7 +32,7 @@ public class TelaCliente extends javax.swing.JInternalFrame {
     private void adicionar() {
         String sql = "insert into tbclientes(nomecli,endcli,fonecli,emailcli) values(?,?,?,?)";
         try {
-            pst = conexao.prepareStatement(sql);            
+            pst = conexao.prepareStatement(sql);
             pst.setString(1, txtCliNome.getText());
             pst.setString(2, txtCliEndereco.getText());
             pst.setString(3, txtCliFone.getText());
@@ -72,11 +72,12 @@ public class TelaCliente extends javax.swing.JInternalFrame {
             rs = pst.executeQuery();
             //a linha abaixo usa a biblioteca rs2xml.jar para preencher a tabela
             tblClientes.setModel(DbUtils.resultSetToTableModel(rs));
-            
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
     }
+
     // método para setar os campos do formulário com o conteúdo da tabela
     public void setar_campos() {
         int setar = tblClientes.getSelectedRow();
@@ -85,8 +86,10 @@ public class TelaCliente extends javax.swing.JInternalFrame {
         txtCliEndereco.setText(tblClientes.getModel().getValueAt(setar, 2).toString());
         txtCliFone.setText(tblClientes.getModel().getValueAt(setar, 3).toString());
         txtCliEmail.setText(tblClientes.getModel().getValueAt(setar, 4).toString());
+        //a linha abaixo desabilita o botão abaixo
+        btnAdicionar.setEnabled(false);
     }
-    
+
     //Criando o método para alterar dados do cliente
     private void alterar() {
         String sql = "update tbclientes set nomecli=?,endcli=?,fonecli=?,emailcli=? where idcli=?";
@@ -95,9 +98,9 @@ public class TelaCliente extends javax.swing.JInternalFrame {
             pst.setString(1, txtCliNome.getText());
             pst.setString(2, txtCliEndereco.getText());
             pst.setString(3, txtCliFone.getText());
-            pst.setString(4, txtCliEmail.getText());  
+            pst.setString(4, txtCliEmail.getText());
             pst.setString(5, txtCliId.getText());
-            
+
             if ((txtCliNome.getText().isEmpty()) || (txtCliFone.getText().isEmpty())) {
                 JOptionPane.showMessageDialog(null, "[ERRO] Preencha todos os campos obrigatórios!");
             } else {
@@ -112,10 +115,35 @@ public class TelaCliente extends javax.swing.JInternalFrame {
                     txtCliEndereco.setText(null);
                     txtCliFone.setText(null);
                     txtCliEmail.setText(null);
+                    btnAdicionar.setEnabled(true);
                 }
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    // método responsável pela remoção de clientes 
+    private void remover() {
+        //a estrutura abaixo confirma a remoção do cliente
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja remover este cliente?", " Atenção", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
+            String sql = "delete from tbclientes where idcli=?";
+            try {
+                pst = conexao.prepareStatement(sql);
+                pst.setString(1, txtCliId.getText());
+                int apagado = pst.executeUpdate();
+                if (apagado > 0) {
+                    JOptionPane.showMessageDialog(null, "Cliente removido com sucesso!");
+                    txtCliNome.setText(null);
+                    txtCliEndereco.setText(null);
+                    txtCliFone.setText(null);
+                    txtCliEmail.setText(null);
+                    btnAdicionar.setEnabled(true);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
         }
     }
 
@@ -198,6 +226,11 @@ public class TelaCliente extends javax.swing.JInternalFrame {
         btnRemover.setToolTipText("Apagar");
         btnRemover.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnRemover.setPreferredSize(new java.awt.Dimension(80, 80));
+        btnRemover.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoverActionPerformed(evt);
+            }
+        });
 
         txtCliPesquisar.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -349,6 +382,11 @@ public class TelaCliente extends javax.swing.JInternalFrame {
         // Método para alterar dados já salvo dos clientes
         alterar();
     }//GEN-LAST:event_btnAlterarActionPerformed
+
+    private void btnRemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoverActionPerformed
+        // Chamando o método para remover um cliente
+        remover();
+    }//GEN-LAST:event_btnRemoverActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
