@@ -7,6 +7,7 @@ package br.com.infox.telas;
 import java.sql.*;
 import br.com.infox.dal.ModuloConexao;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 // A linha abaixo importa recursos da biblioteca rs2xml.jar
 import net.proteanit.sql.DbUtils;
 
@@ -49,11 +50,7 @@ public class TelaCliente extends javax.swing.JInternalFrame {
                 //System.out.println(adicionado);
                 if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "Cliente adicionado com sucesso!");
-                    // A linha abaixo limpa todos os campos
-                    txtCliNome.setText(null);
-                    txtCliEndereco.setText(null);
-                    txtCliFone.setText(null);
-                    txtCliEmail.setText(null);
+                    limpar();
                 }
             }
         } catch (Exception e) {
@@ -63,7 +60,7 @@ public class TelaCliente extends javax.swing.JInternalFrame {
 
     // método para pesquisar clientes pelo nome com filtro
     private void pesquisar_cliente() {
-        String sql = "select * from tbclientes where nomecli like ?";
+        String sql = "select idcli as id, nomecli as nome, endcli as endereço, fonecli as telefone, emailcli as email from tbclientes where nomecli like ?";
         try {
             pst = conexao.prepareStatement(sql);
             //passando o conteúdo da caixa de pesquisa para o ?
@@ -93,38 +90,34 @@ public class TelaCliente extends javax.swing.JInternalFrame {
     //Criando o método para alterar dados do cliente
     private void alterar() {
         // a linha abaixo confirma a alteração de dados do cliente ou não
-        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza de deseja alterar esses dados do cliente?"," Atenção",JOptionPane.YES_NO_OPTION);
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza de deseja alterar esses dados do cliente?", " Atenção", JOptionPane.YES_NO_OPTION);
         if (confirma == JOptionPane.YES_OPTION) {
-        String sql = "update tbclientes set nomecli=?,endcli=?,fonecli=?,emailcli=? where idcli=?";
-        try {
-            pst = conexao.prepareStatement(sql);
-            pst.setString(1, txtCliNome.getText());
-            pst.setString(2, txtCliEndereco.getText());
-            pst.setString(3, txtCliFone.getText());
-            pst.setString(4, txtCliEmail.getText());
-            pst.setString(5, txtCliId.getText());
+            String sql = "update tbclientes set nomecli=?,endcli=?,fonecli=?,emailcli=? where idcli=?";
+            try {
+                pst = conexao.prepareStatement(sql);
+                pst.setString(1, txtCliNome.getText());
+                pst.setString(2, txtCliEndereco.getText());
+                pst.setString(3, txtCliFone.getText());
+                pst.setString(4, txtCliEmail.getText());
+                pst.setString(5, txtCliId.getText());
 
-            if ((txtCliNome.getText().isEmpty()) || (txtCliFone.getText().isEmpty())) {
-                JOptionPane.showMessageDialog(null, "[ERRO] Preencha todos os campos obrigatórios!");
-            } else {
-                // a linha abaixo atualiza a tabela cliente com os dados do formulário
-                // a estrutura abaixo é usada para confirmar a alteração dos dados na tabela
-                int alterado = pst.executeUpdate();
-                // a linha abaixo serve de apoio ao entendimento da lógica
-                //System.out.println(adicionado);
-                if (alterado > 0) {
-                    JOptionPane.showMessageDialog(null, "Dados do cliente alterados com sucesso!");
-                    txtCliNome.setText(null);
-                    txtCliEndereco.setText(null);
-                    txtCliFone.setText(null);
-                    txtCliEmail.setText(null);
-                    txtCliId.setText(null);
-                    btnAdicionar.setEnabled(true);
-                }            
+                if ((txtCliNome.getText().isEmpty()) || (txtCliFone.getText().isEmpty())) {
+                    JOptionPane.showMessageDialog(null, "[ERRO] Preencha todos os campos obrigatórios!");
+                } else {
+                    // a linha abaixo atualiza a tabela cliente com os dados do formulário
+                    // a estrutura abaixo é usada para confirmar a alteração dos dados na tabela
+                    int alterado = pst.executeUpdate();
+                    // a linha abaixo serve de apoio ao entendimento da lógica
+                    //System.out.println(adicionado);
+                    if (alterado > 0) {
+                        JOptionPane.showMessageDialog(null, "Dados do cliente alterados com sucesso!");
+                        limpar();
+                        btnAdicionar.setEnabled(true);
+                    }
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
         }
     }
 
@@ -140,17 +133,24 @@ public class TelaCliente extends javax.swing.JInternalFrame {
                 int apagado = pst.executeUpdate();
                 if (apagado > 0) {
                     JOptionPane.showMessageDialog(null, "Cliente removido com sucesso!");
-                    txtCliNome.setText(null);
-                    txtCliEndereco.setText(null);
-                    txtCliFone.setText(null);
-                    txtCliEmail.setText(null);
-                    txtCliId.setText(null);
+                    limpar();
                     btnAdicionar.setEnabled(true);
                 }
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e);
             }
         }
+    }
+
+    //método para limpar os campos do formulário
+    private void limpar() {
+        txtCliPesquisar.setText(null);
+        txtCliId.setText(null);
+        txtCliNome.setText(null);
+        txtCliEndereco.setText(null);
+        txtCliFone.setText(null);
+        txtCliEmail.setText(null);
+        ((DefaultTableModel) tblClientes.getModel()).setRowCount(0);
     }
 
     /**
@@ -246,18 +246,25 @@ public class TelaCliente extends javax.swing.JInternalFrame {
 
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/infox/icones/pesquisar.png"))); // NOI18N
 
+        tblClientes = new javax.swing.JTable(){
+            public boolean isCellEditable(int rowIndex, int colIndex){
+                return false;
+            }
+        };
         tblClientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "id", "nome", "endereço", "telefone", "email"
             }
         ));
+        tblClientes.setFocusable(false);
         tblClientes.setShowGrid(true);
+        tblClientes.getTableHeader().setReorderingAllowed(false);
         tblClientes.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblClientesMouseClicked(evt);

@@ -44,11 +44,7 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
                 cboUsuPerfil.setSelectedItem(rs.getString(6));
             } else {
                 JOptionPane.showMessageDialog(null, "[ERRO!] Usuário não cadastrado");
-                // as linhas abaixo "limpam os campos"
-                txtUsuNome.setText(null);
-                txtUsuFone.setText(null);
-                txtUsuLogin.setText(null);
-                txtUsuSenha.setText(null);
+                limpar();
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -78,12 +74,7 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
                 //System.out.println(adicionado);
                 if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "Usuário adicionado com sucesso!");
-                    // a linha abaixo, limpa todos os campos
-                    txtUsuId.setText(null);
-                    txtUsuNome.setText(null);
-                    txtUsuFone.setText(null);
-                    txtUsuLogin.setText(null);
-                    txtUsuSenha.setText(null);
+                    limpar();
                 }
             }
         } catch (Exception e) {
@@ -117,11 +108,7 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
                 //System.out.println(adicionado);
                 if (alterado > 0) {
                     JOptionPane.showMessageDialog(null, "Dados do usuário alterados com sucesso!");
-                    txtUsuId.setText(null);
-                    txtUsuNome.setText(null);
-                    txtUsuFone.setText(null);
-                    txtUsuLogin.setText(null);
-                    txtUsuSenha.setText(null);
+                    limpar();
                 }
             }
         } catch (Exception e) {
@@ -141,16 +128,20 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
                 int apagado = pst.executeUpdate();
                 if (apagado>0) {
                 JOptionPane.showMessageDialog(null, "Usuário removido com sucesso!");
-                txtUsuId.setText(null);
-                txtUsuNome.setText(null);
-                txtUsuFone.setText(null);
-                txtUsuLogin.setText(null);
-                txtUsuSenha.setText(null);
+                limpar();
                 }
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e);
             }
         }        
+    }
+    
+    private void limpar() {
+        txtUsuId.setText(null);
+        txtUsuNome.setText(null);
+        txtUsuFone.setText(null);
+        txtUsuLogin.setText(null);
+        txtUsuSenha.setText(null);
     }
 
     /**
