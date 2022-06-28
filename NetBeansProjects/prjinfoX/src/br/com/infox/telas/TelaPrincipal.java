@@ -92,6 +92,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         menCadOS.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.ALT_DOWN_MASK));
         menCadOS.setText("OS");
+        menCadOS.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menCadOSActionPerformed(evt);
+            }
+        });
         menCad.add(menCadOS);
 
         menCadUsu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.ALT_DOWN_MASK));
@@ -227,6 +232,13 @@ public class TelaPrincipal extends javax.swing.JFrame {
         cliente.setVisible(true);
         desktop.add(cliente);
     }//GEN-LAST:event_menCadCliActionPerformed
+
+    private void menCadOSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadOSActionPerformed
+        // chamando a tela os
+        TelaOS os = new TelaOS();
+        os.setVisible(true);
+        desktop.add(os);
+    }//GEN-LAST:event_menCadOSActionPerformed
 
     /**
      * @param args the command line arguments
