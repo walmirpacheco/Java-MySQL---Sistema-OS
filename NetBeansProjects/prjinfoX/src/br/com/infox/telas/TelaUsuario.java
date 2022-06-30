@@ -85,57 +85,58 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
     //criando o método para alterar dados do usuário
     private void alterar() {
         // a estrutura abaixo confirma a alteração do usuário ou não
-        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja alterar esses dados do usuário?"," Atenção",JOptionPane.YES_NO_OPTION);
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja alterar esses dados do usuário?", " Atenção", JOptionPane.YES_NO_OPTION);
         if (confirma == JOptionPane.YES_OPTION) {
-        String sql = "update tbusuarios set usuario=?,fone=?,login=?,senha=?,perfil=? where iduser=?";
-        try {
-            pst = conexao.prepareStatement(sql);
-            pst.setString(1, txtUsuNome.getText());
-            pst.setString(2, txtUsuFone.getText());
-            pst.setString(3, txtUsuLogin.getText());
-            pst.setString(4, txtUsuSenha.getText());
-            pst.setString(5, cboUsuPerfil.getSelectedItem().toString());
-            pst.setString(6, txtUsuId.getText());
+            String sql = "update tbusuarios set usuario=?,fone=?,login=?,senha=?,perfil=? where iduser=?";
+            try {
+                pst = conexao.prepareStatement(sql);
+                pst.setString(1, txtUsuNome.getText());
+                pst.setString(2, txtUsuFone.getText());
+                pst.setString(3, txtUsuLogin.getText());
+                pst.setString(4, txtUsuSenha.getText());
+                pst.setString(5, cboUsuPerfil.getSelectedItem().toString());
+                pst.setString(6, txtUsuId.getText());
 
-            if ((txtUsuId.getText().isEmpty()) || (txtUsuNome.getText().isEmpty()) || (txtUsuLogin.getText().isEmpty()) || (txtUsuSenha.getText().isEmpty())) {
-                JOptionPane.showMessageDialog(null, "[ERRO] Preencha todos os campos obrigatórios!");
-            } else {
+                if ((txtUsuId.getText().isEmpty()) || (txtUsuNome.getText().isEmpty()) || (txtUsuLogin.getText().isEmpty()) || (txtUsuSenha.getText().isEmpty())) {
+                    JOptionPane.showMessageDialog(null, "[ERRO] Preencha todos os campos obrigatórios!");
+                } else {
 
-                // a linha abaixo atualiza a tabela usuário com os dados do formulário
-                // a estrutura abaixo é usada para confirmar a alteração dos dados na tabela
-                int alterado = pst.executeUpdate();
-                // a linha abaixo serve de apoio ao entendimento da lógica
-                //System.out.println(adicionado);
-                if (alterado > 0) {
-                    JOptionPane.showMessageDialog(null, "Dados do usuário alterados com sucesso!");
-                    limpar();
+                    // a linha abaixo atualiza a tabela usuário com os dados do formulário
+                    // a estrutura abaixo é usada para confirmar a alteração dos dados na tabela
+                    int alterado = pst.executeUpdate();
+                    // a linha abaixo serve de apoio ao entendimento da lógica
+                    //System.out.println(adicionado);
+                    if (alterado > 0) {
+                        JOptionPane.showMessageDialog(null, "Dados do usuário alterados com sucesso!");
+                        limpar();
+                    }
                 }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
         }
     }
+
     // método responsável pela remoção de usuários
     private void remover() {
         // a estrutura abaixo, confirma a remoção do usuário
-        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja remover este usuário?"," Atenção",JOptionPane.YES_NO_OPTION);
-        if (confirma==JOptionPane.YES_OPTION) {
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja remover este usuário?", " Atenção", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
             String sql = "delete from tbusuarios where iduser=?";
             try {
                 pst = conexao.prepareStatement(sql);
                 pst.setString(1, txtUsuId.getText());
                 int apagado = pst.executeUpdate();
-                if (apagado>0) {
-                JOptionPane.showMessageDialog(null, "Usuário removido com sucesso!");
-                limpar();
+                if (apagado > 0) {
+                    JOptionPane.showMessageDialog(null, "Usuário removido com sucesso!");
+                    limpar();
                 }
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e);
             }
-        }        
+        }
     }
-    
+
     private void limpar() {
         txtUsuId.setText(null);
         txtUsuNome.setText(null);
