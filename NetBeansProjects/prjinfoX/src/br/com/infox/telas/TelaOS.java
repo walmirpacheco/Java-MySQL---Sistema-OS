@@ -117,23 +117,68 @@ public class TelaOS extends javax.swing.JInternalFrame {
                 tblClientes.setVisible(false);
             } else {
                 JOptionPane.showMessageDialog(null, "[ERRO!] OS não cadastrado!");
+                limpar();
             }
-        } catch (java.sql.SQLSyntaxErrorException e) {
-            JOptionPane.showMessageDialog(null, "[ERRO] OS Inválida!");
-            //System.out.println(e);
+        } catch (SQLSyntaxErrorException e) {
+            JOptionPane.showMessageDialog(null, "[ERRO!] OS Inválido!");
+            //System.out.println(e); 
+            limpar();
         } catch (Exception e2) {
             JOptionPane.showMessageDialog(null, e2);
         }
     }
 
+    // método para alterar uma OS
+    private void alterar_os() {
+        // a linha abaixo confirma a alteração de dados do cliente ou não
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja alterar esses dados da OS"," Atenção",JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
+        String sql = "update tbos set tipo=?,situacao=?,equipamento=?,defeito=?,servico=?,tecnico=?,valor=? where os=?";
+        try {
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, tipo);
+            pst.setString(2, cboOsSit.getSelectedItem().toString());
+            pst.setString(3, txtOsEquip.getText());
+            pst.setString(4, txtOsDef.getText());
+            pst.setString(5, txtOsServ.getText());
+            pst.setString(6, txtOsTec.getText());
+            pst.setString(7, txtOsValor.getText().replace(",", "."));
+            pst.setString(8, txtOs.getText());
+            // validação dos campos obrigatórios
+            if ((txtCliId.getText().isEmpty() || txtOsEquip.getText().isEmpty() || txtOsDef.getText().isEmpty())) {
+                JOptionPane.showMessageDialog(null, "[ERRO!] Preencha todos os campos obrigatórios!");
+            } else {
+                //a linha abaixo atualiza a tabela de OS com os campos do formulário
+                // a extrutura abaixo é usada para confirmar a inserção dos dados da tabela
+                int adicionado = pst.executeUpdate();
+                // a linha abaixo serve de apoio ao entendimento da lógica
+                //System.out.println(adicionado);
+                if (adicionado > 0) {
+                    JOptionPane.showMessageDialog(null, "OS alterado com sucesso!");
+                    limpar();
+                }
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        }
+    }
+
     // limpa os campos do formulário
     private void limpar() {
+        txtOs.setText(null);
+        txtData.setText(null);
         txtOsEquip.setText(null);
         txtOsDef.setText(null);
         txtOsServ.setText(null);
         txtOsTec.setText(null);
         txtOsValor.setText(null);
         txtCliId.setText(null);
+        //habilitar os objetos
+        btnOsAdicionar.setEnabled(true);
+        txtCliPesquisar.setEnabled(true);
+        tblClientes.setVisible(true);
     }
 
     /**
@@ -381,6 +426,11 @@ public class TelaOS extends javax.swing.JInternalFrame {
         btnOsAlterar.setToolTipText("Alterar");
         btnOsAlterar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnOsAlterar.setPreferredSize(new java.awt.Dimension(80, 80));
+        btnOsAlterar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOsAlterarActionPerformed(evt);
+            }
+        });
 
         btnOsExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/infox/icones/delete.png"))); // NOI18N
         btnOsExcluir.setToolTipText("Apagar");
@@ -528,6 +578,11 @@ public class TelaOS extends javax.swing.JInternalFrame {
         // chamando método pesquisar_os
         pesquisar_os();
     }//GEN-LAST:event_btnOsConsultarActionPerformed
+
+    private void btnOsAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOsAlterarActionPerformed
+        // chamando comando alterar_os
+        alterar_os();
+    }//GEN-LAST:event_btnOsAlterarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
