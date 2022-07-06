@@ -49,6 +49,44 @@ public class TelaPrincipal extends javax.swing.JFrame {
         initComponents();
         conexao = ModuloConexao.conector();
     }
+    
+    /**
+     * Método responsável pela emissão do relatório de clientes com 
+     * JasperReports
+     */
+    private void relatorioClientes() {
+                int confirma = JOptionPane.showConfirmDialog(null, "Confirma a impressão desse relatório?", "Atenção", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
+            // imprimindo o relatório com o framework JasperReport
+            try {
+                conexao = ModuloConexao.conector();
+                // usando a classe JasperPrint para preparar a impressão de um relatório
+                JasperPrint print = JasperFillManager.fillReport(getClass().getResourceAsStream("/MinhasPastas/Cursos/MySQL/SistemaOS/NetBeansProjects/prjinfoX/src/reports/clientes.jasper"), null,conexao);
+                // a linha abaixo exibe o relatório através da classe JasperViewer
+                JasperViewer.viewReport(print, false);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+                //System.out.println(e);
+            }
+        }
+    }
+    
+    private void relatorioServicos() {
+                int confirma = JOptionPane.showConfirmDialog(null, "Confirma a emissão deste relatório?", "Atenção", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
+            // emitindo o relatório com o framework JasperReport
+            try {
+                conexao = ModuloConexao.conector();
+                // usando a classe JasperPrint para preparar a impressão de um relatório
+                JasperPrint print = JasperFillManager.fillReport(getClass().getResourceAsStream("/MinhasPastas/Cursos/MySQL/SistemaOS/NetBeansProjects/prjinfoX/src/reports/servicos.jasper"), null,conexao);
+                // a linha abaixo exibe o relatório através da classe JasperViewer
+                JasperViewer.viewReport(print, false);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+                //System.out.println(e);
+            }
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -286,36 +324,12 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void menRelCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelCliActionPerformed
         // gerando um relatório de clientes
-        int confirma = JOptionPane.showConfirmDialog(null, "Confirma a impressão desse relatório?", "Atenção", JOptionPane.YES_NO_OPTION);
-        if (confirma == JOptionPane.YES_OPTION) {
-            // imprimindo o relatório com o framework JasperReport
-            try {
-                // usando a classe JasperPrint para preparar a impressão de um relatório
-                JasperPrint print = JasperFillManager.fillReport("D:/MinhasPastas/Cursos/MySQL/SistemaOS/reports/clientes.jasper", null,conexao);
-                // a linha abaixo exibe o relatório através da classe JasperViewer
-                JasperViewer.viewReport(print, false);
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, e);
-                //System.out.println(e);
-            }
-        }
+        relatorioClientes();
     }//GEN-LAST:event_menRelCliActionPerformed
 
     private void menRelSerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelSerActionPerformed
         // gerando um relatório de serviços
-        int confirma = JOptionPane.showConfirmDialog(null, "Confirma a emissão deste relatório?", "Atenção", JOptionPane.YES_NO_OPTION);
-        if (confirma == JOptionPane.YES_OPTION) {
-            // emitindo o relatório com o framework JasperReport
-            try {
-                // usando a classe JasperPrint para preparar a impressão de um relatório
-                JasperPrint print = JasperFillManager.fillReport("D:/MinhasPastas/Cursos/MySQL/SistemaOS/reports/servicos.jasper", null,conexao);
-                // a linha abaixo exibe o relatório através da classe JasperViewer
-                JasperViewer.viewReport(print, false);
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, e);
-                //System.out.println(e);
-            }
-        }
+        relatorioServicos();
     }//GEN-LAST:event_menRelSerActionPerformed
 
     /**

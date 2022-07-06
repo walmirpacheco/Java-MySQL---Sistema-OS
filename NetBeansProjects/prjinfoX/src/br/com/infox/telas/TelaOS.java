@@ -225,6 +225,7 @@ public class TelaOS extends javax.swing.JInternalFrame {
     // Método para imprimir uma OS
     private void imprimir_os() {
         // imprimindo uma OS
+        conexao = ModuloConexao.conector();
         int confirma = JOptionPane.showConfirmDialog(null, "Confirma a impressão desta OS?", "Atenção", JOptionPane.YES_NO_OPTION);
         if (confirma == JOptionPane.YES_OPTION) {
             // emitindo o relatório com o framework JasperReport
@@ -233,9 +234,10 @@ public class TelaOS extends javax.swing.JInternalFrame {
                 HashMap filtro = new HashMap();
                 filtro.put("os",Integer.parseInt(txtOs.getText()));
                 // Usando a classe JasperPrint para preparar a impressão de um relatório
-                JasperPrint print = JasperFillManager.fillReport("D:/MinhasPastas/Cursos/MySQL/SistemaOS/reports/os.jasper",filtro,conexao);
+                JasperPrint print = JasperFillManager.fillReport(getClass().getResourceAsStream("/MinhasPastas/Cursos/MySQL/SistemaOS/NetBeansProjects/prjinfoX/src/reports/os.jasper"), filtro,conexao);
                 // a linha abaixo exibe o relatório através da classe JasperViewer
                 JasperViewer.viewReport(print, false);
+                conexao.close();
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e);
                 //System.out.println(e);
