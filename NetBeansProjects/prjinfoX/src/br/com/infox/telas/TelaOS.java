@@ -25,9 +25,13 @@ package br.com.infox.telas;
 
 import java.sql.*;
 import br.com.infox.dal.ModuloConexao;
+import java.util.HashMap;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  * Conexao com o banco de dados
@@ -61,7 +65,7 @@ public class TelaOS extends javax.swing.JInternalFrame {
             pst.setString(1, txtCliPesquisar.getText() + "%");
             rs = pst.executeQuery();
             //a linha abaixo usa a biblioteca rs2xml.jar para preencher a tabela
-            tblClientes.setModel(DbUtils.resultSetToTableModel(rs));            
+            tblClientes.setModel(DbUtils.resultSetToTableModel(rs));
             txtOsValor.setText("0");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -99,6 +103,8 @@ public class TelaOS extends javax.swing.JInternalFrame {
                 //System.out.println(adicionado); 
                 if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "OS emitido com sucesso!");
+                    // recuperar o número da os
+                    recuperarOs();
                     btnOsAdicionar.setEnabled(false);
                     btnOsConsultar.setEnabled(false);
                     btnOsImprimir.setEnabled(true);
@@ -213,6 +219,41 @@ public class TelaOS extends javax.swing.JInternalFrame {
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e);
             }
+        }
+    }
+
+    // Método para imprimir uma OS
+    private void imprimir_os() {
+        // imprimindo uma OS
+        int confirma = JOptionPane.showConfirmDialog(null, "Confirma a impressão desta OS?", "Atenção", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
+            // emitindo o relatório com o framework JasperReport
+            try {
+                // Usando a classe HashMap para criar um filtro
+                HashMap filtro = new HashMap();
+                filtro.put("os",Integer.parseInt(txtOs.getText()));
+                // Usando a classe JasperPrint para preparar a impressão de um relatório
+                JasperPrint print = JasperFillManager.fillReport("D:/MinhasPastas/Cursos/MySQL/SistemaOS/reports/os.jasper",filtro,conexao);
+                // a linha abaixo exibe o relatório através da classe JasperViewer
+                JasperViewer.viewReport(print, false);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+                //System.out.println(e);
+            }
+        }
+    }
+    
+    // recuperar OS
+    private void recuperarOs() {
+        String sql = "select max(os) from tbos";
+        try {
+            pst=conexao.prepareStatement(sql);
+            rs=pst.executeQuery();
+            if (rs.next()) {
+                txtOs.setText(rs.getString(1));
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
         }
     }
 
@@ -508,6 +549,11 @@ public class TelaOS extends javax.swing.JInternalFrame {
         btnOsImprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnOsImprimir.setEnabled(false);
         btnOsImprimir.setPreferredSize(new java.awt.Dimension(80, 80));
+        btnOsImprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOsImprimirActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -655,6 +701,11 @@ public class TelaOS extends javax.swing.JInternalFrame {
         // chamando o método para excluir uma OS
         excluir_os();
     }//GEN-LAST:event_btnOsExcluirActionPerformed
+
+    private void btnOsImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOsImprimirActionPerformed
+        // Chamando o método para imprimir uma OS
+        imprimir_os();
+    }//GEN-LAST:event_btnOsImprimirActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
